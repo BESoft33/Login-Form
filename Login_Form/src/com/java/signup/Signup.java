@@ -12,16 +12,21 @@ import javax.swing.WindowConstants;
 
 import com.java.database.DatabaseConnector;
 
-public class Signup extends DatabaseConnector{
-	protected JFrame frame;
-	protected JPanel collector;
-	protected JLabel fname,lname,username,createPassword,verifyPassword;
-	protected JTextField firstname,lastname,userField;
-	protected JPasswordField pwdField1,pwdField2;
-	protected JButton createAccount;
+public class Signup{
+	protected static VerifyAccount verify;
+	protected static JFrame frame;
+	protected static JPanel collector;
+	protected static JLabel fname,lname;
+	protected static JLabel username;
+	protected static JLabel createPassword;
+	protected static JLabel verifyPassword;
+	public static JTextField firstname,lastname,userField;
+	public static JPasswordField pwdField1,pwdField2;
+	public static JButton createAccount;
 	
 	public Signup() throws Exception{
 		try {
+			//verify= new VerifyAccount();
 			frame=new JFrame();
 			
 			collector=new JPanel();
@@ -48,9 +53,6 @@ public class Signup extends DatabaseConnector{
 			frame.setSize(600,500);
 			frame.setVisible(true);
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			
-			setComponentSize();
-			addComponents();
 		}
 		
 		catch(Exception e) {
@@ -92,8 +94,5 @@ public class Signup extends DatabaseConnector{
 		
 		createAccount.setBounds(120,220,200,25);
 		
-	}
-	public static void main(String[] args) throws Exception {
-		Signup signup=new Signup();
 	}
 }

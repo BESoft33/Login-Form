@@ -1,63 +1,62 @@
 package com.java.login;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 import com.java.database.DatabaseConnector;
 
-public class HomePage extends JFrame{
-	//protected static JFrame frame;
+public class HomePage{
+	protected static DatabaseConnector connector;
+	
+	protected static HandlingEvent event;
+	
+	protected static JFrame frame;
+	
 	protected static JLabel username;
 	protected static JLabel password;
-	protected static  JButton login;
+	
+	protected static JButton login;
 	protected static JButton signup;
 	protected static JButton reset;
+	
 	protected static JTextField usernameField;
 	protected static JPasswordField passwordField;
+	
 	protected static JPanel container;
-	protected static JCheckBox showPassword;
-	protected static DatabaseConnector connector;
+	
+	protected static JCheckBox showPassword;    
+    
+	public void setWorkspace() throws Exception{
+		frame=new JFrame();
+		
+		container= new JPanel();
+		container.setLayout(null);
+	
+		username=new JLabel("Username: ");
+		password=new JLabel("Password: ");
+	
+		usernameField=new JTextField();
+		passwordField=new JPasswordField();
+	
+		login=new JButton("Login");
+		signup=new JButton("Signup");
+		reset=new JButton("Reset");
 
-	public HomePage() throws Exception{
-		try {	
-			connector=new DatabaseConnector();
-		
-			container= new JPanel();
-			container.setLayout(null);
-		
-			username=new JLabel("Username: ");
-			password=new JLabel("Password: ");
-		
-			usernameField=new JTextField();
-			passwordField=new JPasswordField();
-		
-			login=new JButton("Login");
-			signup=new JButton("Signup");
-			reset=new JButton("Reset");
-		
-			showPassword=new JCheckBox("Show Password");
-		
-			defineLayout();
-			addItems();
-		
-			add(container);
-			container.setVisible(true);
-		
-			setTitle("Simple Login Form");
-		
-			setVisible(true);
-			setSize(600,500);
-			setDefaultCloseOperation(EXIT_ON_CLOSE);
+		showPassword=new JCheckBox("Show Password");
 	
-		}
+		frame.add(container);
+		container.setVisible(true);
 	
-		catch(Exception e) {
-			System.out.println(e);
-		}
+		frame.setTitle("Simple Login Form");
 	
+		frame.setVisible(true);
+		frame.setSize(600,500);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 	
 		
-	public void defineLayout() {
+	public void defineLayout() throws Exception{
 		username.setBounds(100,100,150,50);
 		password.setBounds(100,170,150,50);
 		usernameField.setBounds(300,100,200,40);
@@ -69,6 +68,7 @@ public class HomePage extends JFrame{
 		
 	}
 	
+	
 	public void addItems() {
 		container.add(username);
 		container.add(usernameField);
@@ -79,5 +79,27 @@ public class HomePage extends JFrame{
 		container.add(reset);
 		container.add(showPassword);
 		
-	}	
+	}
+	public void setDatabaseConnector() throws Exception {
+		connector=new DatabaseConnector();
+	}
+	public void handleEvents() throws Exception{
+			event=new HandlingEvent();
+	}
+	
+	public static void main (String[] args){
+		HomePage homepage=new HomePage();
+
+		try {
+			homepage.setWorkspace();
+			homepage.defineLayout();
+			homepage.addItems();
+			homepage.handleEvents();
+			homepage.setDatabaseConnector();
+		}
+		catch(Exception e) {
+			JOptionPane.showMessageDialog(null,e);
+		}
+		
+	}
 }

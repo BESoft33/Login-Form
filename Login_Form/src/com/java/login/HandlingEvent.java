@@ -1,60 +1,79 @@
 package com.java.login;
 
 import java.awt.event.ActionListener;
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
-import java.awt.event.ActionEvent;
-import com.java.signup.*;
+import com.java.database.DatabaseConnector;
+import com.java.signup.Signup;
+import com.java.signup.VerifyAccount;
 
-public class HandlingEvent extends HomePage implements ActionListener{ 
-	public HandlingEvent() throws Exception{
+import java.awt.event.ActionEvent;
+
+public class HandlingEvent implements ActionListener{ 
+	
+	public HandlingEvent() {
 		actionEvent();
 	}
 	
 	public void actionEvent() {
-		login.addActionListener(this);
-		signup.addActionListener(this);
-		reset.addActionListener(this);
-		showPassword.addActionListener(this);
+		HomePage.login.addActionListener(this);
+		HomePage.signup.addActionListener(this);
+		HomePage.reset.addActionListener(this);
+		HomePage.showPassword.addActionListener(this);
 	}
 		
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	try {
-
-		if(e.getSource()==login) {
-			//System.out.println("Username: "+usernameField.getText());
-			String pass=passwordField.toString();
-			if(usernameField.getText()==null || pass==null) {
-				System.out.println("Username or Password field is empty");
+		String username,password;
+		username=HomePage.usernameField.getText();
+		password=HomePage.passwordField.getText();
+		
+		if(e.getSource()==HomePage.login) {
+			
+			if(username.isBlank()|| password.isBlank()) {
+				JOptionPane.showMessageDialog(null, "Username or Password Field cannot be empty");
 				return;
 			}
-			else {
-				
+			
+			String query="Select * from LoginData where username=? and password=?";
+			ResultSet rs=DatabaseConnector.stmt.executeQuery(query);
+			if(!rs.next()) {
+				JOptionPane.showMessageDialog(null, "Username and password mismatch or doesn't exist");
 			}
+			else {
+				//Login Successful
+			}
+			
 		}
 		
-		if(e.getSource()==signup) {
-			Signup sign=new Signup();
+		else if(e.getSource()==HomePage.signup) {
+			
+			Signup signup=new Signup();
+			VerifyAccount verify=new VerifyAccount();
+			
+			signup.setComponentSize();
+			signup.addComponents();
 		}
 		
-		if(e.getSource()==reset) {
-			usernameField.setText("");
-			passwordField.setText("");
+		else if(e.getSource()==HomePage.reset) {
+			HomePage.usernameField.setText("");
+			HomePage.passwordField.setText("");
 		}
 		
-		if(e.getSource()==showPassword) {
+		else if(e.getSource()==HomePage.showPassword) {
 						
-			if(showPassword.isSelected()) {
-				passwordField.setEchoChar((char)0);
+			if(HomePage.showPassword.isSelected()) {
+				HomePage.passwordField.setEchoChar((char)0);
 			}
 			else {
-				passwordField.setEchoChar('*');
+				HomePage.passwordField.setEchoChar('*');
 			}		
 		}
 	}
 	catch(Exception exception) {
-	System.out.println(exception);
+		System.out.print(exception);
 	}	
 }
 }

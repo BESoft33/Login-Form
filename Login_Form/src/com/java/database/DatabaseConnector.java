@@ -4,31 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class DatabaseConnector{
-	public static Connection conn;
-	public String connector;
-	public String sql;
-	public static PreparedStatement stmt;
-	public ResultSet rs;
 	
-	public DatabaseConnector() throws Exception{
-			Class.forName("com.mysql.jdbc.Driver");
-			connector="jdbc:mysql://localhost:3300/ProjectUserData";
-			//ProjectUserData is DATABASE name
-			
-			conn=DriverManager.getConnection(connector,"root","");
-			sql="Insert into LoginData"+
-					"(firstname,lastname,username,password)"+
-					"values(?,?,?,?)";			
-			//LoginData is TABLE name
-			
-			stmt=conn.prepareStatement(sql);
-			
-			System.out.println("Successfully connected to database");
-			
+	public Connection getConnection() throws Exception{	
+		Class.forName("com.mysql.jdbc.Driver");	
+		Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3300/ProjectUserData","root","");
+		return conn;			
+		//System.out.println("Successfully connected to database");		
 	}
+	
 }

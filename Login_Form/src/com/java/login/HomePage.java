@@ -1,31 +1,33 @@
 package com.java.login;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.*;
 
 import com.java.database.DatabaseConnector;
 
-public class HomePage{
-	protected static DatabaseConnector connector;
+public class HomePage implements ActionListener{
+	protected  DatabaseConnector connector;
+		
+	protected  JFrame frame;
 	
-	protected static HandlingEvent event;
+	protected  JLabel username;
+	protected  JLabel password;
 	
-	protected static JFrame frame;
+	protected  JButton login;
+	protected  JButton signup;
+	protected  JButton reset;
 	
-	protected static JLabel username;
-	protected static JLabel password;
+	protected  JTextField usernameField;
+	protected  JPasswordField passwordField;
 	
-	protected static JButton login;
-	protected static JButton signup;
-	protected static JButton reset;
+	protected  JPanel container;
 	
-	protected static JTextField usernameField;
-	protected static JPasswordField passwordField;
-	
-	protected static JPanel container;
-	
-	protected static JCheckBox showPassword;    
+	protected  JCheckBox showPassword;    
     
 	public void setWorkspace() throws Exception{
 		frame=new JFrame();
@@ -53,6 +55,8 @@ public class HomePage{
 		frame.setVisible(true);
 		frame.setSize(600,500);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		
+		connector=new DatabaseConnector();
 	}
 	
 		
@@ -69,7 +73,7 @@ public class HomePage{
 	}
 	
 	
-	public void addItems() {
+	public void addItems() throws Exception{
 		container.add(username);
 		container.add(usernameField);
 		container.add(password);
@@ -80,26 +84,78 @@ public class HomePage{
 		container.add(showPassword);
 		
 	}
-	public void setDatabaseConnector() throws Exception {
-		connector=new DatabaseConnector();
+	public void actionEvent() {
+		login.addActionListener(this);
+		signup.addActionListener(this);
+		reset.addActionListener(this);
+		showPassword.addActionListener(this);
 	}
-	public void handleEvents() throws Exception{
-			event=new HandlingEvent();
+		
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	try {
+		String username,password;
+		username=usernameField.getText();
+		password=passwordField.getText();
+		
+		if(e.getSource()==login) {
+			Connection conn = connector.getConnection();
+			System.out.println("Connected!");
+
+			if(username.isBlank()|| password.isBlank()) {
+				JOptionPane.showMessageDialog(null, "Username or Password Field cannot be empty");
+				return;
+			}
+			else {
+				String sql="Select * from LoginData";
+				PreparedStatement stmt=conn.prepareStatement(sql);
+				ResultSet rs=stmt.executeQuery(sql);
+				
+				while(rs.next()) {
+					if(username.equals(rs.getString("username")) && password.equals(rs.getString("password"))) {
+						JOptionPane.showMessageDialog(null, "Ready for login");
+					}
+				}
+			}
+		}
+		
+		else if(e.getSource()==signup) {
+			
+			Signup signup=new Signup();
+			signup.addComponents();
+			signup.setComponentSize();
+			frame.dispose();
+		}
+		
+		else if(e.getSource()==reset) {
+			usernameField.setText("");
+			passwordField.setText("");
+		}
+		
+		else if(e.getSource()==showPassword) {
+						
+			if(showPassword.isSelected()) {
+				passwordField.setEchoChar((char)0);
+			}
+			else {
+				passwordField.setEchoChar('*');
+			}		
+		}
+	}
+	catch(Exception exception) {
+		System.out.print(exception);
+	}
 	}
 	
-	public static void main (String[] args){
+	public static void main(String[] args) {
 		HomePage homepage=new HomePage();
-
 		try {
 			homepage.setWorkspace();
 			homepage.defineLayout();
 			homepage.addItems();
-			homepage.handleEvents();
-			homepage.setDatabaseConnector();
+			homepage.actionEvent();
+		}catch(Exception e) {
+			
 		}
-		catch(Exception e) {
-			JOptionPane.showMessageDialog(null,e);
-		}
-		
 	}
 }
